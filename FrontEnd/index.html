@@ -11,24 +11,54 @@
       rel="stylesheet"
     />
     <meta name="description" content="" />
-    <link rel="stylesheet" href="./assets/style.css" />
+    <link rel="stylesheet" href="style_sb.css" />
+    <script
+      type="application/javascript"
+      src="script_index_sb.js"
+      defer
+    ></script>
+    <script
+      src="https://kit.fontawesome.com/a15c888155.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
-  <body>
+  <body id="main-content">
     <header>
-      <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
-      <nav>
+      <nav id="top-bar" class="top-bar-design">
         <ul>
-          <li>projets</li>
-          <li>contact</li>
-          <li>login</li>
-          <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
+          <li>
+            <a href="#"
+              ><i class="fa-sharp fa-regular fa-pen-to-square"></i>Mode
+              édition</a
+            >
+          </li>
+          <li><a href="#" class="publish-btn">publier les changements</a></li>
         </ul>
       </nav>
+      <div class="name-of-designer-and-nav-buttons">
+        <h1>
+          <span class="name-of-designer">Sophie Bluel</span>
+          <span class="job-of-designer">ARCHITECTE D'INTÉRIEUR</span>
+        </h1>
+        <nav>
+          <ul>
+            <li><a href="#portfolio">projects</a></li>
+            <li><a href="#contact">contact</a></li>
+
+            <li>
+              <a class="only-guest" href="login_sb.html">login </a>
+              <a id="nav-logout" class="only-admin" href="#">logout</a>
+            </li>
+
+            <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
+          </ul>
+        </nav>
+      </div>
     </header>
     <main>
       <section id="introduction">
         <figure>
-          <img src="./assets/images/sophie-bluel.png" alt="" />
+          <img src="./assets/images/sophie-bluel.png" alt="Sophie Bluel" />
         </figure>
         <article>
           <h2>Designer d'espace</h2>
@@ -51,52 +81,13 @@
       </section>
       <section id="portfolio">
         <h2>Mes Projets</h2>
-        <div class="gallery">
-          <!-- <figure>
-				<img src="assets/images/abajour-tahina.png" alt="Abajour Tahina">
-				<figcaption>Abajour Tahina</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-v.png" alt="Appartement Paris V">
-				<figcaption>Appartement Paris V</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/restaurant-sushisen-londres.png" alt="Restaurant Sushisen - Londres">
-				<figcaption>Restaurant Sushisen - Londres</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/la-balisiere.png" alt="Villa “La Balisiere” - Port Louis">
-				<figcaption>Villa “La Balisiere” - Port Louis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/structures-thermopolis.png" alt="Structures Thermopolis">
-				<figcaption>Structures Thermopolis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-x.png" alt="Appartement Paris X">
-				<figcaption>Appartement Paris X</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/le-coteau-cassis.png" alt="Pavillon “Le coteau” - Cassis">
-				<figcaption>Pavillon “Le coteau” - Cassis</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/villa-ferneze.png" alt="Villa Ferneze - Isola d’Elba">
-				<figcaption>Villa Ferneze - Isola d’Elba</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/appartement-paris-xviii.png" alt="Appartement Paris XVIII">
-				<figcaption>Appartement Paris XVIII</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/bar-lullaby-paris.png" alt="Bar “Lullaby” - Paris">
-				<figcaption>Bar “Lullaby” - Paris</figcaption>
-			</figure>
-			<figure>
-				<img src="assets/images/hotel-first-arte-new-delhi.png" alt="Hotel First Arte - New Delhi">
-				<figcaption>Hotel First Arte - New Delhi</figcaption>
-			</figure> -->
+        <div>
+          <a id="update-works" class="only-admin update-btn" href="#modal"
+            ><i class="fa-sharp fa-regular fa-pen-to-square"></i>modifier</a
+          >
         </div>
+        <div id="all-filters" class="filters"></div>
+        <div class="gallery"></div>
       </section>
       <section id="contact">
         <h2>Contact</h2>
@@ -120,6 +111,66 @@
         </ul>
       </nav>
     </footer>
+    <button onclick="openModal()">Deschide Modal</button>
+
+    <!-- Creation du modal window-->
+    <div
+      id="modal"
+      role="dialog"
+      aria-labelledby="title-modal-overlay"
+      class="modal-overlay"
+      aria-hidden="true"
+      style="display: none"
+    >
+      <div id="modal-works" class="modal-gallery">
+        <a id="button-to-close-first-window" href="#" class="modal-close"
+          ><i class="fa-solid fa-xmark"></i
+        ></a>
+        <h3 id="title-modal-overlay" class="modal-title">Galerie photo</h3>
+
+        <div class="modal-content"></div>
+        <hr />
+        <div class="container-modal-add">
+          <button id="modal-edit-add" class="modal-add">
+            Ajouter une photo
+          </button>
+        </div>
+      </div>
+      <div id="modal-edit" class="modal-edit-work">
+        <div class="container-for-icon-in-second-window-of-modal">
+          <a id="arrow-return" href="#"
+            ><i class="fa-solid fa-arrow-left"></i
+          ></a>
+          <a id="button-to-close-second-window" href="#"
+            ><i class="fa-solid fa-xmark"></i
+          ></a>
+        </div>
+        <h3 class="modal-title">Ajout photo</h3>
+        <form id="modal-edit-work-form" method="post" action="#">
+          <div id="modal-edit-new-photo" class="modal-content-new-photo">
+            <i id="photo-add-icon" class="fa-regular fa-image"></i>
+            <label id="new-image">+ Ajouter photo</label>
+            <input
+              id="form-image"
+              type="file"
+              name="image"
+              accept=".jpeg, .jpg, .png"
+              required
+            />
+            <p id="photo-size">jpg, png : 4mo max</p>
+          </div>
+          <div class="modal-content-new-category-title">
+            <label for="form-title">Titre</label>
+            <input type="text" name="title" id="form-title" value="" required />
+            <label for="form-category">Catégorie</label>
+            <select class="choice-category" id="form-category" required>
+              <option value=""></option>
+            </select>
+            <hr class="border-in-second-window-of-modal" />
+            <input type="submit" id="submit-new-work" value="Valider" />
+          </div>
+        </form>
+      </div>
+    </div>
   </body>
-  <script type="application/javascript" src="script.js"></script>
 </html>
