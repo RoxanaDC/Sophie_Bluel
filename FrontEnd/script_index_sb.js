@@ -97,81 +97,70 @@ document.addEventListener("DOMContentLoaded", async () => {
 /* --- Quand connectée avec ---
 --- user: sophie.bluel@test.tld ---
 ---password: S0phie --- */
-
-// Click sur logout pour deconecter
-//Si le bouton cliqué, le token et userID sont supprimés de localStorage
-//l'interface est modifiée pour indiquer que l'utilisateur n'est plus connecté.
-document
-  //Selectioner l'element avec id="nav-logout".
-  .getElementById("nav-logout")
-  //Ajouter un listener pour l'evenement click:
-  .addEventListener("click", function (event) {
-    //Prevenir le comportement implicit
-    event.preventDefault();
-    //Efacer les données du localStorage:
-    localStorage.removeItem("userId");
-    localStorage.removeItem("token");
-    //La modification visuelle de la page quand l'admin est connectée
-    //(l'elimination de la classe connected de l'element <body>)
-    document.querySelector("body").classList.remove(`connected`);
-    //Selecter l'element avec id="top-bar" et mettre le style display à none,
-    //pour le cacher
-    let topBar = document.getElementById("top-bar");
-    topBar.style.display = "none";
-    //Selecter l'element avec id="all-filters" et mettre le syle display à flex,
-    //pour l'afficher.
-    let filters = document.getElementById("all-filters");
-    filters.style.display = "flex";
-    //Selecter l'element avec id="space-only-admin" et mettre le syle paddingBottom à 0,
-    // pour modifier l'espace en bas de cet element
-    let space = document.getElementById("space-only-admin");
-    space.style.paddingBottom = "0";
-  });
-
-//Attacher l'evenement DOMContentLoaded au document pour s'assurer que les fonctions
-// sont executées juste après que le document soit chargé et analisé totalement
 document.addEventListener("DOMContentLoaded", function () {
-  handleAdminMode();
-  setupLogoutListener();
-  setupUpdateWorksListener();
+  handleAdminMode(); //verifie s'il existe un token et un userId dans localStorage (utilisateur autentifié)
+  clickSurLienModifier();
   setupModalCloseListeners();
   setupModalEditListeners();
-  setupFormHandlers();
   fetchCategories();
+  setupFormHandlers();
+  validateFormFields();
   bindFormFieldsCheck();
 });
 
-//La fonction handleAdminMode, verifie s'il existe un token et un userId dans localStorage (utilisateur autentifié)
-
+// LOGIN
+//modifie l'interface, pour aficher les elements d'administration
 function handleAdminMode() {
   if (
     localStorage.getItem("token") != null &&
     localStorage.getItem("userId") != null
   ) {
-    //Si token et useId existent, on modifie l'interface, pour aficher les elements d'administration
     document.querySelector("body").classList.add("connected");
     document.getElementById("top-bar").style.display = "flex";
     document.getElementById("all-filters").style.display = "none";
-    document.getElementById("space-only-admin").style.paddingBottom = "100px";
-    document.getElementById(
-      "space-introduction-in-mode-admin"
-    ).style.marginTop = "-50px";
+    document.getElementById("space-only-admin").style.paddingBottom = "25px";
   }
 }
 
-//Définit un écouteur pour le bouton de mise à jour du travail.
-//Lorsque l'utilisateur clique sur ce bouton, les tâches de l'API sont récupérées et le modal est mis à jour.
-function setupUpdateWorksListener() {
-  document
-    .getElementById("update-works")
-    .addEventListener("click", function (event) {
-      event.preventDefault();
-      fetchWorksAndUpdateModal();
+// LOGOUT
+//Efacer les données du localStorage:
+//La modification visuelle de la page quand l'admin est connectée
+document
+  .getElementById("nav-logout")
+  .addEventListener("click", function (event) {
+    event.preventDefault();
+    localStorage.removeItem("userId");
+    localStorage.removeItem("token");
+
+    document.querySelector("body").classList.remove(`connected`);
+    let topBar = document.getElementById("top-bar");
+    topBar.style.display = "none";
+    let filters = document.getElementById("all-filters");
+    filters.style.display = "flex";
+    let space = document.getElementById("space-only-admin");
+    space.style.paddingBottom = "0";
+  });
+
+// click sur le lien "modifier"
+function clickSurLienModifier() {
+  let lienPourModifier = document.getElementById("update-works");
+  if (lienPourModifier) {
+    lienPourModifier.addEventListener("click", function (eveniment) {
+      eveniment.preventDefault();
+      console.log(
+        "tu as appuyé sur le lien pour modifier et tu vois la modale"
+      );
+      document.getElementById("modal").style.display = "flex";
+      document.getElementById("modal-works").style.display = "block";
     });
+  } else {
+    console.error("elementul update-work nu a fost gasit");
+  }
+  fetchWorksAndUpdateModal();
 }
+
 //Requête à l'API pour récupérer les travaux existants.
 //Si la réponse est ok, appelle la fonction updateWorksModal avec les données reçues.
-
 function fetchWorksAndUpdateModal() {
   fetch("http://localhost:5678/api/works")
     .then((response) =>
@@ -181,27 +170,24 @@ function fetchWorksAndUpdateModal() {
     .catch((err) => console.log(err));
 }
 
-//la fonction updateWorksModal reçoit une liste de travaux (works),
+//la fonction updateWorksModal reçoit une liste de travaux (works)
+//l'enfant de l'element avec id-ul #modal-works et classe .modal-gallery dans le même temps
+//Effacer le contenu de l'element modalContent
+//on fait appel a la fontion createWorkFigure(work)
+//qui reçoit un travaux en paramettre et returne un element HTML qui represente le travaux
+//Appeler la fonction qui efface le travaux courrent
+//appeler la fonction openWorkModal() qui va faire visible le modal
+
 function updateWorksModal(works) {
-  //Selectioner l'element dans lequel on va aficher les traveaux (works) - il a la classe .modal-content,
-  //et il est l'enfant de l'element avec id-ul #modal-works et classe .modal-gallery dans le même temps
   const modalContent = document.querySelector(
     "#modal-works.modal-gallery .modal-content"
   );
-  //Effacer le contenu de l'element modalContent
   modalContent.innerText = "";
-  //pour chaque traveaux de l'array work
   works.forEach((work) => {
-    //on fait appel a la fontion createWorkFigure(work)
-    //qui reçoit un travaux en paramettre et returne un element HTML qui represente le travaux
     const workFigure = createWorkFigure(work);
-    //Ajouter l'element workFigure (qui contienne la representation HTML du travaux)
-    //à l'interieur de modalContent, pour etre affiché dans le modal.
     modalContent.appendChild(workFigure);
-    //Appeler la fonction qui efface le travaux courrent
     setupTrashIconListener(work);
   });
-  //appeler la fonction openWorkModal() qui va faire visible le modal
   openWorkModal();
 }
 
@@ -229,29 +215,29 @@ function createTrashIcon() {
   return trashIcon;
 }
 
+// Afficher une fênetre pour confirmer la supression
+//si confirmé, alors supprime le traveaux
 function setupTrashIconListener(work) {
   document
     .getElementById(`work-item-popup-${work.id}`)
     .querySelector(".trash")
     .addEventListener("click", function (event) {
       event.preventDefault();
-
-      // Afficher une fênetre pour confirmer la supression
       if (confirm("Voulez-vous supprimer cet élément ?")) {
-        //si confirmé, alors supprime le traveaux
         deleteWork(work.id);
       }
     });
 }
 
 // Fontion pour supprimer
+// Demande envoyé à l'API pour la supression
+// Le token est envoyé dans l'antete de l'autorisation
 function deleteWork(workId) {
-  // Demande envoyé à l'API pour la supression
   fetch(`http://localhost:5678/api/works/${workId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"), // Le token est envoyé dans l'antete de l'autorisation
+      Authorization: "Bearer " + localStorage.getItem("token"),
     },
   })
     .then((response) => handleDeleteResponse(response, workId))
@@ -281,8 +267,8 @@ function handleDeleteResponse(response, workId) {
 
 // Visibilité du modal
 function openWorkModal() {
-  document.getElementById("modal").style.display = "flex";
-  document.getElementById("modal-works").style.display = "block";
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("modal-works").style.display = "none";
 }
 
 //Gestioner les fermetures des modales
@@ -320,33 +306,28 @@ function closeModalAndReset(event) {
   resetModalForm();
 }
 // Reset modal form
+// Si l'element avec id = "form-image-preview" existe, celui-ci est eliminé du DOM
+// Afficher l'icon gris avec le soleil et la montagnes
+// Afficher label id new-image
+// Afficher la balise <p> qui donne des infos sur la dimension du photo
+// paddind pour la div qui contienne les 3 elements precedentes
+// changer la couleur du boutton valider pour indiquer qu'il n'est pas active
+
 function resetModalForm() {
-  // Si l'element avec id = "form-image-preview" existe, celui-ci est eliminé du DOM
   if (document.getElementById("form-image-preview")) {
     document.getElementById("form-image-preview").remove();
   }
-
   document.getElementById("modal-edit-work-form").reset();
-
-  // Afficher l'icon gris avec le soleil et la montagnes
   document.getElementById("photo-add-icon").style.display = "block";
-
-  // Afficher label id new-image
   document.getElementById("new-image").style.display = "block";
-
-  // Afficher la balise <p> qui donne des infos sur la dimension du photo
   document.getElementById("photo-size").style.display = "block";
-
-  // paddind pour la div qui contienne les 3 elements precedentes
   document.getElementById("modal-edit-new-photo").style.padding =
     "30px 0 19px 0";
 
-  // Schimbă culoarea de fundal a butonului de submit pentru a indica că nu este activat
   document.getElementById("submit-new-work").style.backgroundColor = "grey";
 }
 
-// Naviguer entre les 2 sections de la modale - la section avec la liste les travaux et la section pour editer la liste +
-// Reset le formulaire pour editer
+// Naviguer entre les 2 sections de la modale + Reset le formulaire pour editer
 function setupModalEditListeners() {
   // Configurer le bouton "modal-edit-add" de la liste des travaux
   document
@@ -389,13 +370,13 @@ function populateCategories(categories) {
 
 //Gestion de l'evenement SUBMIT envoyé par le bouton "Valider" du formulaire d'ajoute de photo
 function setupFormHandlers() {
-  document
+  /*   document
     .getElementById("modal-edit-work-form")
     .addEventListener("submit", function (event) {
-      //Prevent default et appele fonction submitNewWork()
       event.preventDefault();
       submitNewWork();
-    });
+    }); */
+  /* submitNewWork(); de repus */
   //Selecter l'element de type <input> avec id= "form-image"
   document
     .getElementById("form-image")
@@ -449,25 +430,109 @@ function addNewWorkToPage(json) {
 }
 
 // Gestion de l'image - est ce qu'elle respecte la dimension ?
+//S'il existe au moins un fichier de type image selecté
+// le fichier est stoqué dans la variable "file"
+// La fonction s'arrete si l'image est trop grande
+// Fonction anonyme pour l'evenement onload du FileReader.
+// Si le fichier est lu avec succes, on appele cette fonction et on lui donne un evenement "e".
+
 function handleImagePreview() {
   let fileInput = document.getElementById("form-image");
   const maxFileSize = 4 * 1024 * 1024; // 4 MB
-  //S'il existe au moins un fichier de type image selecté
   if (fileInput.files.length > 0) {
-    // le fichier est stoqué dans la constante "file"
     const file = fileInput.files[0];
     if (file.size > maxFileSize) {
       alert("La taille du fichier dépasse 4 MB.");
-      // La fonction s'arrete si l'image est trop grande
       return;
     }
-
     let reader = new FileReader();
-    // Fonction anonyme pour l'evenement onload du FileReader.
-    // Si le fichier est lu avec succes, on appele cette fonction et on lui donne un evenement "e".
-
     reader.onload = function (e) {
-      // l'appel de la fonction updateImagePreview avec le résultat de la lecture du fichier (e.target.result),
+      updateImagePreview(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+//previsualiser une nouvelle photo, cacher des elements et modifier le style du container
+// essaye d'obtenir l'element de previsualisation de l'image avec id=form-image-preview
+//si l'element n'existe pas, il est creé avec ses characteristiques: id, src, etc...
+//IF - si l'element avec id = form-image-preview n'existe pas, l'element imgPreview est ajouté au debout de l'element
+//avec id = modal-edit-new-photo (celui avec l'icon soleil+montagne + bouton "+Ajouter photo" + dimension image)
+function updateImagePreview(imageSrc) {
+  let imgPreview =
+    document.getElementById("form-image-preview") ||
+    document.createElement("img");
+  imgPreview.id = "form-image-preview";
+  imgPreview.src = imageSrc;
+  imgPreview.alt = "Prévisualisation de la nouvelle photo";
+  imgPreview.style.width = "129px";
+  imgPreview.style.height = "168px";
+  imgPreview.style.objectFit = "cover";
+  if (!document.getElementById("form-image-preview")) {
+    let formDiv = document.getElementById("modal-edit-new-photo");
+    formDiv.prepend(imgPreview);
+  }
+  document.getElementById("photo-add-icon").style.display = "none";
+  document.getElementById("new-image").style.display = "none";
+  document.getElementById("photo-size").style.display = "none";
+
+  document.getElementById("modal-edit-new-photo").style.padding = "0";
+}
+
+//select toutes les elements input et select du formulair.
+//si changement => declencher la fonction de validation
+function bindFormFieldsCheck() {
+  let formFields = document.querySelectorAll(
+    "#modal-edit-work-form input, #modal-edit-work-form select"
+  );
+  formFields.forEach((field) => {
+    field.addEventListener("input", validateFormFields);
+  });
+}
+
+//Initialisation à true, d'une variable - allFieldsFilled
+//Verifier si la valeur de chaque element de la liste formFields est vide
+//(trim elimine les espaces du debout et de la fin)
+//Si un element est vide, la valeur de la variable allFieldsFilled est atribuée a false
+//Le boutton "Valider" avec id = submit-new-work change de couleur en fonction de la valeur de la variable allFieldsFilled
+// si allFieldsFilled est true - couleur verte
+//allFieldsFilled est false - couleur grise
+//après apuyer sur le bouton valider, la modale ferme
+function validateFormFields() {
+  let formFields = document.querySelectorAll(
+    "#modal-edit-work-form input, #modal-edit-work-form select"
+  );
+  let allFieldsFilled = true;
+  formFields.forEach((field) => {
+    if (!field.value.trim()) {
+      allFieldsFilled = false;
+    }
+  });
+  document.getElementById("submit-new-work").style.backgroundColor =
+    allFieldsFilled ? "#1D6154" : "#A7A7A7";
+  document
+    .getElementById("submit-new-work")
+    /* .addEventListener("click", setupFormHandlers); */
+    .addEventListener("click", submitNewWork);
+}
+
+// Gestion de l'image - est ce qu'elle respecte la dimension ?
+//S'il existe au moins un fichier de type image selecté, le fichier est stoqué dans la constante "file"
+// La fonction s'arrete si l'image est trop grande
+// Fonction anonyme pour l'evenement onload du FileReader.
+// Si le fichier est lu avec succes, on appele cette fonction et on lui donne un evenement "e".
+// l'appel de la fonction updateImagePreview avec le résultat de la lecture du fichier (e.target.result),
+
+function handleImagePreview() {
+  let fileInput = document.getElementById("form-image");
+  const maxFileSize = 4 * 1024 * 1024; // 4 MB
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    if (file.size > maxFileSize) {
+      alert("La taille du fichier dépasse 4 MB.");
+      return;
+    }
+    let reader = new FileReader();
+    reader.onload = function (e) {
       updateImagePreview(e.target.result);
     };
     //Se inițiază citirea fișierului selectat ca un URL de date (data URL).
@@ -507,55 +572,4 @@ function updateImagePreview(imageSrc) {
   document.getElementById("photo-size").style.display = "none";
 
   document.getElementById("modal-edit-new-photo").style.padding = "0";
-}
-
-//În esență, funcția bindFormFieldsCheck() face următoarele:
-//Selectează toate elementele de input și select dintr-un formular specific.
-//Adaugă un ascultător de evenimente pentru fiecare dintre aceste elemente.
-//Asigură că de fiecare dată când utilizatorul modifică valoarea unui câmp,
-//se declanșează funcția validateFormFields, care validează datele din formular.
-//Această funcție este utilă pentru a implementa o validare dinamică și
-//interactivă a formularului, permițându-i utilizatorului să primească feedback instantaneu despre datele introduse.
-function bindFormFieldsCheck() {
-  //selectează toate elementele <input> și <select>
-  //din cadrul formularului formularul cu ID-ul modal-edit-work-form și
-  //le returnează sub forma unei liste NodeList.
-  let formFields = document.querySelectorAll(
-    "#modal-edit-work-form input, #modal-edit-work-form select"
-  );
-  //Se iterează prin fiecare element din lista formFields folosind metoda forEach.
-  formFields.forEach((field) => {
-    //Pentru fiecare element de input și select, se adaugă un eveniment de ascultare (event listener) pentru evenimentul input.
-    //Evenimentul input se declanșează de fiecare dată când valoarea unui câmp de input sau select se schimbă.
-    //Funcția validateFormFields este apelată de fiecare dată când evenimentul input este declanșat,
-    //permițând validarea în timp real a câmpurilor formularului.
-    field.addEventListener("input", validateFormFields);
-  });
-}
-//Funcția validateFormFields() validează câmpurile unui formular pentru a verifica dacă toate sunt completate
-//și modifică stilul butonului de trimitere în funcție de această validare
-function validateFormFields() {
-  //selectează toate elementele <input> și <select> din cadrul formularului cu id = modal-edit-work-form
-  //și le returnează sub forma unei liste NodeList.
-  let formFields = document.querySelectorAll(
-    "#modal-edit-work-form input, #modal-edit-work-form select"
-  );
-  //Se inițializează o variabilă allFieldsFilled cu valoarea true.
-  //Această variabilă va fi folosită pentru a determina dacă toate câmpurile formularului sunt completate.
-  let allFieldsFilled = true;
-  //Se iterează prin fiecare element din lista formFields folosind metoda forEach.
-  formFields.forEach((field) => {
-    //Pentru fiecare câmp, se verifică dacă valoarea acestuia este goală.
-    //(după eliminarea spațiilor de la început și sfârșit cu trim())
-    //Dacă un câmp este gol, se setează allFieldsFilled la false.
-    if (!field.value.trim()) {
-      allFieldsFilled = false;
-    }
-  });
-  //Se obține elementul butonului de trimitere a formularului cu ID-ul submit-new-work.
-  //Se setează culoarea de fundal a butonului în funcție de valoarea allFieldsFilled:
-  //Dacă allFieldsFilled este true (toate câmpurile sunt completate), culoarea de fundal este setată la #1D6154 (o nuanță de verde).
-  //Dacă allFieldsFilled este false (cel puțin un câmp nu este completat), culoarea de fundal este setată la #A7A7A7 (gri).
-  document.getElementById("submit-new-work").style.backgroundColor =
-    allFieldsFilled ? "#1D6154" : "#A7A7A7";
 }

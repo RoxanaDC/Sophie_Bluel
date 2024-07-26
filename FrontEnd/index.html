@@ -32,7 +32,6 @@
               édition</a
             >
           </li>
-          <li><a href="#" class="publish-btn">publier les changements</a></li>
         </ul>
       </nav>
       <div class="name-of-designer-and-nav-buttons">
@@ -80,11 +79,13 @@
         </article>
       </section>
       <section id="portfolio">
-        <h2>Mes Projets</h2>
-        <div>
-          <a id="update-works" class="only-admin update-btn" href="#modal"
-            ><i class="fa-sharp fa-regular fa-pen-to-square"></i>modifier</a
-          >
+        <div id="space-only-admin" class="container-only-admin">
+          <h2>Mes Projets</h2>
+          <div>
+            <a id="update-works" class="only-admin update-btn" href="#modal"
+              ><i class="fa-sharp fa-regular fa-pen-to-square"></i>modifier</a
+            >
+          </div>
         </div>
         <div id="all-filters" class="filters"></div>
         <div class="gallery"></div>
@@ -111,10 +112,10 @@
         </ul>
       </nav>
     </footer>
-    <button onclick="openModal()">Deschide Modal</button>
+    <a href="#modal" class="js-modal">Deschide modal</a>
 
-    <!-- Creation du modal window-->
-    <div
+    <!-- Creation de la fênetre modale-->
+    <aside
       id="modal"
       role="dialog"
       aria-labelledby="title-modal-overlay"
@@ -122,6 +123,7 @@
       aria-hidden="true"
       style="display: none"
     >
+      <!---------------------------------------------------------------------->
       <div id="modal-works" class="modal-gallery">
         <a id="button-to-close-first-window" href="#" class="modal-close"
           ><i class="fa-solid fa-xmark"></i
@@ -136,6 +138,8 @@
           </button>
         </div>
       </div>
+      <!---------------------------------------------------------------------->
+
       <div id="modal-edit" class="modal-edit-work">
         <div class="container-for-icon-in-second-window-of-modal">
           <a id="arrow-return" href="#"
@@ -167,10 +171,16 @@
               <option value=""></option>
             </select>
             <hr class="border-in-second-window-of-modal" />
-            <input type="submit" id="submit-new-work" value="Valider" />
+            <!-- <input type="submit" id="submit-new-work" value="Valider" /> -->
+            <!-- ------------------ -->
+            <div class="container-submit-new-work">
+              <button id="submit-new-work" class="modal-add">Valider</button>
+            </div>
+
+            <!-- --------------------- -->
           </div>
         </form>
       </div>
-    </div>
+    </aside>
   </body>
 </html>
