@@ -105,7 +105,8 @@ nav,
 section {
   display: block;
 }
-body {
+
+*/ body {
   line-height: 1;
 }
 ol,
@@ -198,12 +199,16 @@ h1 {
   flex-direction: column;
 }
 
-h1 .job-of-designer {
+h1 {
   font-size: 0.68em;
   line-height: 12px;
   letter-spacing: 0.1em;
   margin-top: 5px;
   color: #b1663c;
+}
+.job-of-designer {
+  font-size: 0.38em;
+  margin-top: 3px;
 }
 
 h1 .name-of-designer {
@@ -213,11 +218,17 @@ h1 .name-of-designer {
   color: #b1663c;
   font-family: "Syne";
 }
+/*projects, contact, logout*/
 nav ul {
   display: flex;
   flex-direction: row;
   align-items: center;
-  font-size: small;
+  font-size: smaller;
+}
+
+#instagram {
+  width: 50%;
+  height: 50%;
 }
 
 nav li {
@@ -471,7 +482,8 @@ button:hover {
 
 #top-bar {
   margin-top: -60px;
-  width: 100%;
+  margin-left: -12%;
+  width: 120%;
 }
 
 .modal-gallery,
@@ -705,10 +717,16 @@ select {
   margin-top: 45px;
 }
 
+.container-submit-new-work {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+}
+
 #modal-edit-work-form input[type="submit"] {
-  border-radius: 60px;
+  border-radius: 50px;
   margin: 30px auto 45px;
-  padding: 10px 90px;
+  padding: 10px;
   border: none;
   color: #ffffff;
   font-style: normal;
@@ -717,14 +735,7 @@ select {
   background-color: #a7a7a7;
 }
 
-#submit-new-work [type="submit"] {
-  /* background-color: red; */
-  padding-left: -300px;
-  font-size: xx-small;
-}
-
-.container-submit-new-work {
-  display: flex;
-  align-content: center;
-  justify-content: center;
+/*align photo Sophie at left*/
+#portrait-sophie {
+  float: left;
 }

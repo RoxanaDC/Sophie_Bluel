@@ -49,7 +49,13 @@
               <a id="nav-logout" class="only-admin" href="#">logout</a>
             </li>
 
-            <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
+            <li>
+              <img
+                src="./assets/icons/instagram.png"
+                alt="Instagram"
+                id="instagram"
+              />
+            </li>
           </ul>
         </nav>
       </div>
@@ -57,7 +63,12 @@
     <main>
       <section id="introduction">
         <figure>
-          <img src="./assets/images/sophie-bluel.png" alt="Sophie Bluel" />
+          <img
+            src="./assets/images/sophie-bluel.png"
+            alt="Sophie Bluel"
+            id="portrait-sophie"
+            style="float: left"
+          />
         </figure>
         <article>
           <h2>Designer d'espace</h2>
@@ -123,7 +134,7 @@
       aria-hidden="true"
       style="display: none"
     >
-      <!---------------------------------------------------------------------->
+      <!------------------------------modal-works---------------------------------------->
       <div id="modal-works" class="modal-gallery">
         <a id="button-to-close-first-window" href="#" class="modal-close"
           ><i class="fa-solid fa-xmark"></i
@@ -138,7 +149,7 @@
           </button>
         </div>
       </div>
-      <!---------------------------------------------------------------------->
+      <!-------------------------------modal-edit--------------------------------------->
 
       <div id="modal-edit" class="modal-edit-work">
         <div class="container-for-icon-in-second-window-of-modal">
@@ -171,13 +182,7 @@
               <option value=""></option>
             </select>
             <hr class="border-in-second-window-of-modal" />
-            <!-- <input type="submit" id="submit-new-work" value="Valider" /> -->
-            <!-- ------------------ -->
-            <div class="container-submit-new-work">
-              <button id="submit-new-work" class="modal-add">Valider</button>
-            </div>
-
-            <!-- --------------------- -->
+            <input type="submit" id="submit-new-work" value="Valider" />
           </div>
         </form>
       </div>
