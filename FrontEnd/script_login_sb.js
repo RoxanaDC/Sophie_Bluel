@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(function (data) {
           console.log(data);
+          console.log("inainte de data.tooken si data.uuserId");
           localStorage.setItem("token", data.token);
           localStorage.setItem("userId", data.userId);
           // Redirection vers 'index.html'

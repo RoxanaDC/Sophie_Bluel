@@ -95,8 +95,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 /* --- Quand connectée avec ---
---- user: sophie.bluel@test.tld ---
----password: S0phie --- */
+   --- user and password: --- */
 document.addEventListener("DOMContentLoaded", function () {
   handleAdminMode(); //verifie s'il existe un token et un userId dans localStorage (utilisateur autentifié)
   clickOnLinkModifier(); // click sur le lien "modifier"
@@ -106,6 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
   setupFormHandlers(); //Gestion de l'evenement SUBMIT envoyé par le bouton "Valider" du formulaire d'ajoute de photo
   validateFormFields(); //Verifier si touts les champs sont remplis, pour ajouter une photo
   bindFormFieldsCheck(); //select toutes les elements du formulair. Si changement => appel la fonction de validation
+  ListenSubmitModalEdit();
+  //deleteWithNewBin();
 });
 
 // LOGIN
@@ -154,7 +155,7 @@ function clickOnLinkModifier() {
       document.getElementById("modal-works").style.display = "block";
     });
   } else {
-    console.error("elementul update-work nu a fost gasit");
+    console.error("l`element update-works est introuvable");
   }
   fetchWorksAndUpdateModal();
 }
@@ -174,6 +175,16 @@ async function fetchWorksAndUpdateModal() {
   }
 }
 
+//In modal- Construction et le retourn d'un element <figure>, qui va contenir toutes les infos sur le travaux
+function createWorkFigureInModal(work) {
+  let myFigure = document.createElement("figure");
+  myFigure.className = `work-item category-id-0 category-id-${work.categoryId}`;
+  myFigure.id = `work-item-popup-${work.id}`;
+  myFigure.appendChild(createImageElement(work));
+  myFigure.appendChild(createTrashIcon(work));
+  return myFigure;
+}
+
 //la fonction updateWorksModal reçoit la liste de travaux (works)
 //selecter l'enfant .modal-content, de l'element avec id = #modal-works et classe = .modal-gallery
 //Effacer le contenu de l'element modalContent
@@ -182,25 +193,32 @@ async function fetchWorksAndUpdateModal() {
 //appeler la fonction openWorkModal() qui va faire visible le modal
 
 function updateWorksModal(works) {
-  const modalContent = document.querySelector(
+  let modalContent = document.querySelector(
     "#modal-works.modal-gallery .modal-content"
   );
   modalContent.innerText = "";
   works.forEach((work) => {
-    const workFigure = createWorkFigure(work);
+    let workFigure = createWorkFigureInModal(work);
     modalContent.appendChild(workFigure);
     setupTrashIconListener(work);
   });
   openWorkModal();
 }
 
-//Construction et le retourn d'un element <figure>, qui va contenir toutes les infos sur le travaux
-function createWorkFigure(work) {
+//In page - Construction et le retourn d'un element <figure>, qui va contenir toutes les infos sur le travaux
+function createWorkFigureInPage(work) {
   let myFigure = document.createElement("figure");
   myFigure.className = `work-item category-id-0 category-id-${work.categoryId}`;
   myFigure.id = `work-item-popup-${work.id}`;
   myFigure.appendChild(createImageElement(work));
-  myFigure.appendChild(createTrashIcon());
+
+  // Creation <figcaption>
+  let figCaptionSite = document.createElement("figcaption");
+  figCaptionSite.textContent = work.title;
+
+  //Append
+  myFigure.appendChild(figCaptionSite);
+
   return myFigure;
 }
 // Creation de l'image
@@ -214,23 +232,39 @@ function createImageElement(work) {
 //Creation et configuration de l'element <i> - corbeille
 function createTrashIcon() {
   let trashIcon = document.createElement("i");
-  trashIcon.classList.add("fa-solid", "fa-trash-can", "trash");
+  trashIcon.classList.add(
+    "fa-solid",
+    "fa-trash-can",
+    "trash",
+    "nouvelle-corbeille"
+  );
+
   return trashIcon;
 }
 
+// ------------------------ RRRRRRRR ---------------------------------
+
+//attribuer a la nouvelle corbeille la possibilite de supprimer
+//function deleteWithNewBin() {
+//  let nouvelleCorbeille = document.querySelector("nouvelle-corbeille");
+//  setupTrashIconListener(nouvelleCorbeille);
+//}
+// ------------------------ RRRRRRRR ---------------------------------
+
 // Afficher une fênetre pour confirmer la supression. Si confirmé, alors supprime le traveaux
 function setupTrashIconListener(work) {
-  document
+  let trashIcon = document
     .getElementById(`work-item-popup-${work.id}`)
-    .querySelector(".trash")
-    .addEventListener("click", function (event) {
+    .querySelector(".trash");
+  if (trashIcon) {
+    trashIcon.addEventListener("click", async function (event) {
       event.preventDefault();
       if (confirm("Voulez-vous supprimer cet élément ?")) {
-        deleteWork(work.id);
+        await deleteWork(work.id);
       }
     });
+  }
 }
-
 // Fontion pour supprimer
 // Demande envoyé à l'API pour la supression
 // Le token est envoyé dans l'antete de l'autorisation
@@ -244,7 +278,13 @@ async function deleteWork(workId) {
       },
     });
 
-    handleDeleteResponse(response, workId);
+    if (response.ok) {
+      document.getElementById(`work-item-${workId}`)?.remove();
+      document.getElementById(`work-item-popup-${workId}`)?.remove();
+      await fetchWorksAndUpdateModal(); // Reîncarcă lucrările după ștergere
+    } else {
+      handleDeleteResponse(response, workId);
+    }
   } catch (err) {
     console.log(err);
   }
@@ -275,6 +315,27 @@ function handleDeleteResponse(response, workId) {
 function openWorkModal() {
   document.getElementById("modal").style.display = "none";
   document.getElementById("modal-works").style.display = "none";
+  document.getElementById("modal-works").style.cssText = `
+  
+  position:fixe;
+  display: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: space-around;
+  
+ 
+`;
+  document.querySelector(".modal-content").style.cssText = `
+  margin-left:40px;
+  margin-right:40px;
+  width: auto;
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+grid-column-gap: 10px;
+overflow: hidden;
+  `;
 }
 
 //Gestioner les fermetures des modales
@@ -300,7 +361,6 @@ function setupModalCloseListeners() {
 
 //Cacher la modale principale et les 2 sections: modal-works et modal-edit
 function closeModal(event) {
-  event.preventDefault();
   document.getElementById("modal").style.display = "none";
   document.getElementById("modal-works").style.display = "none";
   document.getElementById("modal-edit").style.display = "none";
@@ -379,10 +439,19 @@ function populateCategories(categories) {
 }
 
 //Gestion de l'evenement SUBMIT envoyé par le bouton "Valider" du formulaire d'ajoute de photo
-function setupFormHandlers() {
+/* function setupFormHandlers() {
   document
     .getElementById("form-image")
     .addEventListener("change", handleImagePreview);
+} */
+
+function setupFormHandlers() {
+  document
+    .getElementById("form-image")
+    .addEventListener("change", function (event) {
+      event.preventDefault(); // Prevenirea refresh-ului paginii
+      handleImagePreview();
+    });
 }
 
 async function submitNewWork() {
@@ -393,7 +462,7 @@ async function submitNewWork() {
   formData.append("image", document.getElementById("form-image").files[0]);
 
   try {
-    const response = await fetch("http://localhost:5678/api/works", {
+    let response = await fetch("http://localhost:5678/api/works", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
@@ -404,8 +473,9 @@ async function submitNewWork() {
     await handleNewWorkResponse(response); // Gestioner la reponse de la demande
 
     if (response.ok) {
-      const json = await response.json();
-      addNewWorkToPage(json); // Appelle la function qui ajoute le travaux à la page
+      let json = await response.json();
+      addNewWorkToPage(json);
+      addNewWorkToModale(json);
     } else {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -427,20 +497,32 @@ function handleNewWorkResponse(response) {
       alert("Impossible d'ajouter le projet!");
       break;
     case 201: //Created
-      return response.json();
+      // return response.json();
+      return response;
     default:
       alert("Erreur inconnue!");
       break;
   }
 }
+
 // Ajouter un nouveaux travaux dans la gallerie
 //Fermer et reset la modale d'ajoute
 function addNewWorkToPage(json) {
-  let myFigure = createWorkFigure(json);
+  let myFigure = createWorkFigureInPage(json);
   document.querySelector("div.gallery").appendChild(myFigure);
   closeModalAndReset();
 }
 
+// Ajouter un nouveaux travaux dans la modale
+
+function addNewWorkToModale(json) {
+  let myFigure = createWorkFigureInModal(json);
+  document
+    .querySelector("#modal-works.modal-gallery .modal-content")
+    .appendChild(myFigure);
+  setupTrashIconListener(json);
+  closeModalAndReset();
+}
 // Gestion de l'image - est ce qu'elle respecte la dimension ?
 //S'il existe au moins un fichier de type image selecté
 // le fichier est stoqué dans la variable "file"
@@ -510,8 +592,10 @@ function bindFormFieldsCheck() {
 //après apuyer sur le bouton valider, la modale ferme
 function validateFormFields() {
   let formFields = document.querySelectorAll(
-    "#modal-edit-work-form button, #modal-edit-work-form select, #modal-edit-work-form input"
+    //"#modal-edit-work-form button, #modal-edit-work-form select, #modal-edit-work-form input"
+    "#modal-edit-work-form select, #modal-edit-work-form input"
   );
+
   let allFieldsFilled = true;
   formFields.forEach((field) => {
     if (!field.value.trim()) {
@@ -520,31 +604,24 @@ function validateFormFields() {
   });
   document.getElementById("submit-new-work").style.backgroundColor =
     allFieldsFilled ? "#1D6154" : "#A7A7A7";
-  document
+
+  /*   document
     .getElementById("submit-new-work")
-    .addEventListener("click", submitNewWork);
+    .addEventListener("click", submitNewWork); */
+
+  /*   document
+    .getElementById("modal-edit-work-form")
+    .addEventListener("submit", function (event) {
+      //event.preventDefault(); // Prevenirea refresh-ului paginii
+      submitNewWork();
+    }); */
 }
 
-// Gestion de l'image - est ce qu'elle respecte la dimension ?
-//S'il existe au moins un fichier de type image selecté, le fichier est stoqué dans la constante "file"
-// La fonction s'arrete si l'image est trop grande
-// Fonction anonyme pour l'evenement onload du FileReader.
-// Si le fichier est lu avec succes, on appele cette fonction et on lui donne un evenement "e".
-// l'appel de la fonction updateImagePreview avec le résultat de la lecture du fichier (e.target.result),
-function handleImagePreview() {
-  let fileInput = document.getElementById("form-image");
-  const maxFileSize = 4 * 1024 * 1024; // 4 MB
-
-  if (fileInput.files.length > 0) {
-    const file = fileInput.files[0];
-    if (file.size > maxFileSize) {
-      alert("La taille du fichier dépasse 4 MB.");
-      return;
-    }
-    let reader = new FileReader();
-    reader.onload = function (e) {
-      updateImagePreview(e.target.result);
-    };
-    reader.readAsDataURL(file);
-  }
+function ListenSubmitModalEdit() {
+  document
+    .getElementById("modal-edit-work-form")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevenirea refresh-ului paginii
+      submitNewWork();
+    });
 }

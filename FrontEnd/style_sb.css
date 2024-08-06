@@ -488,12 +488,17 @@ button:hover {
 
 .modal-gallery,
 .modal-edit-work {
-  width: 80%;
-  height: 600px;
   background-color: whitesmoke;
+  width: 630px;
+  height: 750px;
+  height: auto;
+  display: flex;
   border-radius: 10px;
-  display: none;
+  align-items: center;
+  justify-content: center;
   margin-top: -20px;
+  padding: 0px;
+  display: none;
 }
 
 .modal-content .work-item .trash {
@@ -513,7 +518,7 @@ button:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px;
+  margin-top: 20px;
 }
 #modal {
   position: fixed;
@@ -539,17 +544,12 @@ button:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50%;
-  height: 700px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  display: none;
 }
 
 .modal-content {
   overflow: auto;
-  width: 90%;
-  height: 70%;
+  width: 85%;
+  height: 450px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -557,6 +557,7 @@ button:hover {
   flex-wrap: wrap;
   padding: 20px;
   gap: 10px;
+  align-self: center;
 }
 
 .modal-content figure {
@@ -565,7 +566,7 @@ button:hover {
 }
 
 .modal-content img {
-  width: 80px;
+  width: 6vw;
 }
 
 .modal-close {
@@ -610,21 +611,7 @@ button:hover {
   font-weight: 700;
 }
 
-.modal-gallery,
 .modal-edit-work {
-  display: flex;
-
-  background-color: whitesmoke;
-  border-radius: 10px;
-  display: none;
-  padding: 0px;
-}
-
-/* "modal-edit" */
-
-.modal-edit-work {
-  width: 630px;
-  height: 670px;
   background-color: #ffffff;
   border-radius: 10px;
   display: none;
@@ -738,4 +725,13 @@ select {
 /*align photo Sophie at left*/
 #portrait-sophie {
   float: left;
+}
+
+.modal-content {
+  height: 400px;
+}
+
+#modal-works {
+  height: 680px;
+  overflow: hidden;
 }
