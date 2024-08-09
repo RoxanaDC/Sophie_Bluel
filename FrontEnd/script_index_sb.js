@@ -106,9 +106,9 @@ document.addEventListener("DOMContentLoaded", function () {
   validateFormFields(); //Verifier si touts les champs sont remplis, pour ajouter une photo
   bindFormFieldsCheck(); //select toutes les elements du formulair. Si changement => appel la fonction de validation
   ListenSubmitModalEdit();
-  //deleteWithNewBin();
 });
 
+//1--
 // LOGIN
 //modifie l'interface, pour aficher les elements d'administration
 function handleAdminMode() {
@@ -141,7 +141,7 @@ document
     let space = document.getElementById("space-only-admin");
     space.style.paddingBottom = "0";
   });
-
+//2--
 // click sur le lien "modifier"
 function clickOnLinkModifier() {
   let lienPourModifier = document.getElementById("update-works");
@@ -159,7 +159,7 @@ function clickOnLinkModifier() {
   }
   fetchWorksAndUpdateModal();
 }
-
+//3--
 //Requête à l'API pour récupérer les travaux existants.
 //Si la réponse est ok, appelle la fonction updateWorksModal avec les données reçues.
 async function fetchWorksAndUpdateModal() {
@@ -174,7 +174,7 @@ async function fetchWorksAndUpdateModal() {
     console.log(err);
   }
 }
-
+//4--
 //In modal- Construction et le retourn d'un element <figure>, qui va contenir toutes les infos sur le travaux
 function createWorkFigureInModal(work) {
   let myFigure = document.createElement("figure");
@@ -185,6 +185,7 @@ function createWorkFigureInModal(work) {
   return myFigure;
 }
 
+//5--
 //la fonction updateWorksModal reçoit la liste de travaux (works)
 //selecter l'enfant .modal-content, de l'element avec id = #modal-works et classe = .modal-gallery
 //Effacer le contenu de l'element modalContent
@@ -204,7 +205,7 @@ function updateWorksModal(works) {
   });
   openWorkModal();
 }
-
+//6--
 //In page - Construction et le retourn d'un element <figure>, qui va contenir toutes les infos sur le travaux
 function createWorkFigureInPage(work) {
   let myFigure = document.createElement("figure");
@@ -221,6 +222,7 @@ function createWorkFigureInPage(work) {
 
   return myFigure;
 }
+//7--
 // Creation de l'image
 function createImageElement(work) {
   let myImg = document.createElement("img");
@@ -228,7 +230,7 @@ function createImageElement(work) {
   myImg.alt = work.title;
   return myImg;
 }
-
+//8--
 //Creation et configuration de l'element <i> - corbeille
 function createTrashIcon() {
   let trashIcon = document.createElement("i");
@@ -241,16 +243,7 @@ function createTrashIcon() {
 
   return trashIcon;
 }
-
-// ------------------------ RRRRRRRR ---------------------------------
-
-//attribuer a la nouvelle corbeille la possibilite de supprimer
-//function deleteWithNewBin() {
-//  let nouvelleCorbeille = document.querySelector("nouvelle-corbeille");
-//  setupTrashIconListener(nouvelleCorbeille);
-//}
-// ------------------------ RRRRRRRR ---------------------------------
-
+//9--
 // Afficher une fênetre pour confirmer la supression. Si confirmé, alors supprime le traveaux
 function setupTrashIconListener(work) {
   let trashIcon = document
@@ -265,6 +258,7 @@ function setupTrashIconListener(work) {
     });
   }
 }
+//10--
 // Fontion pour supprimer
 // Demande envoyé à l'API pour la supression
 // Le token est envoyé dans l'antete de l'autorisation
@@ -288,8 +282,10 @@ async function deleteWork(workId) {
   } catch (err) {
     console.log(err);
   }
+  resetModalForm();
 }
 
+//11--
 // Gestion de la reponse du serveur API pour
 function handleDeleteResponse(response, workId) {
   switch (response.status) {
@@ -311,33 +307,16 @@ function handleDeleteResponse(response, workId) {
   }
 }
 
+//12--
 // Visibilité du modal
 function openWorkModal() {
   document.getElementById("modal").style.display = "none";
   document.getElementById("modal-works").style.display = "none";
-  document.getElementById("modal-works").style.cssText = `
-  
-  position:fixe;
-  display: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: space-around;
-  
- 
-`;
-  document.querySelector(".modal-content").style.cssText = `
-  margin-left:40px;
-  margin-right:40px;
-  width: auto;
-  padding: 40px;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-grid-column-gap: 10px;
-overflow: hidden;
-  `;
-}
+  //document.getElementById("modal-works").style.cssText = ` display: none`;
 
+  document.querySelector(".modal-content").style.cssText = `display: flex`;
+}
+//13--
 //Gestioner les fermetures des modales
 function setupModalCloseListeners() {
   document.querySelectorAll("#modal-works").forEach((modalWorks) => {
@@ -358,20 +337,20 @@ function setupModalCloseListeners() {
     .getElementById("button-to-close-second-window")
     .addEventListener("click", closeModalAndReset);
 }
-
+//14--
 //Cacher la modale principale et les 2 sections: modal-works et modal-edit
 function closeModal(event) {
   document.getElementById("modal").style.display = "none";
   document.getElementById("modal-works").style.display = "none";
   document.getElementById("modal-edit").style.display = "none";
 }
-
+//15--
 // Fermer modal et reset
 function closeModalAndReset(event) {
   closeModal(event);
   resetModalForm();
 }
-
+//16--
 // Reset modal form
 // Si l'element avec id = "form-image-preview" existe, celui-ci est eliminé du DOM
 // Afficher l'icon gris avec le soleil et la montagnes
@@ -391,7 +370,7 @@ function resetModalForm() {
     "30px 0 19px 0";
   document.getElementById("submit-new-work").style.backgroundColor = "grey";
 }
-
+//17--
 // Naviguer entre les 2 sections de la modale + Reset le formulaire pour editer
 function setupModalEditListeners() {
   // Configurer le bouton "modal-edit-add" de la liste des travaux
@@ -412,7 +391,7 @@ function setupModalEditListeners() {
       resetModalForm();
     });
 }
-
+//18--
 // Demande à L'API les categories et les passer à la fonction populateCategories pour remplir la liste
 async function fetchCategories() {
   try {
@@ -426,7 +405,7 @@ async function fetchCategories() {
     console.log(error);
   }
 }
-
+//19--
 // Creation d'une liste d'options dropdown avec les categories obtenues precedement
 function populateCategories(categories) {
   categories.forEach((category) => {
@@ -445,6 +424,7 @@ function populateCategories(categories) {
     .addEventListener("change", handleImagePreview);
 } */
 
+//20--
 function setupFormHandlers() {
   document
     .getElementById("form-image")
@@ -454,6 +434,31 @@ function setupFormHandlers() {
     });
 }
 
+//21--
+// Gestion de l'image - est ce qu'elle respecte la dimension ?
+//S'il existe au moins un fichier de type image selecté
+// le fichier est stoqué dans la variable "file"
+// La fonction s'arrete si l'image est trop grande
+// Fonction anonyme pour l'evenement onload du FileReader.
+// Si le fichier est lu avec succes, on appele cette fonction et on lui donne un evenement "e".
+function handleImagePreview() {
+  let fileInput = document.getElementById("form-image"); //form-image est le boutton +Ajouter photo du deuxieme modale
+  const maxFileSize = 4 * 1024 * 1024; // 4 MB
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    if (file.size > maxFileSize) {
+      alert("La taille du fichier dépasse 4 MB.");
+      return;
+    }
+    let reader = new FileReader();
+    reader.onload = function (e) {
+      updateImagePreview(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  }
+}
+//22--
+//Ajouter une nouvelle photo dans la gallerie et dans la modale
 async function submitNewWork() {
   // Creer un nouveau objet formData, pour collecter les données du formulaire
   let formData = new FormData();
@@ -483,7 +488,7 @@ async function submitNewWork() {
     console.log(err);
   }
 }
-
+//23--
 //Gestion de la reponse de l'API, après l'envoye d'un nouveaux travaux
 function handleNewWorkResponse(response) {
   switch (response.status) {
@@ -504,48 +509,30 @@ function handleNewWorkResponse(response) {
       break;
   }
 }
-
+//24--
 // Ajouter un nouveaux travaux dans la gallerie
 //Fermer et reset la modale d'ajoute
 function addNewWorkToPage(json) {
   let myFigure = createWorkFigureInPage(json);
   document.querySelector("div.gallery").appendChild(myFigure);
-  closeModalAndReset();
+  // closeModalAndReset();
+  //resetModalForm();
 }
 
+//25--
 // Ajouter un nouveaux travaux dans la modale
-
 function addNewWorkToModale(json) {
   let myFigure = createWorkFigureInModal(json);
   document
     .querySelector("#modal-works.modal-gallery .modal-content")
     .appendChild(myFigure);
-  setupTrashIconListener(json);
-  closeModalAndReset();
-}
-// Gestion de l'image - est ce qu'elle respecte la dimension ?
-//S'il existe au moins un fichier de type image selecté
-// le fichier est stoqué dans la variable "file"
-// La fonction s'arrete si l'image est trop grande
-// Fonction anonyme pour l'evenement onload du FileReader.
-// Si le fichier est lu avec succes, on appele cette fonction et on lui donne un evenement "e".
-function handleImagePreview() {
-  let fileInput = document.getElementById("form-image");
-  const maxFileSize = 4 * 1024 * 1024; // 4 MB
-  if (fileInput.files.length > 0) {
-    const file = fileInput.files[0];
-    if (file.size > maxFileSize) {
-      alert("La taille du fichier dépasse 4 MB.");
-      return;
-    }
-    let reader = new FileReader();
-    reader.onload = function (e) {
-      updateImagePreview(e.target.result);
-    };
-    reader.readAsDataURL(file);
-  }
-}
+  // fetchWorksAndUpdateModal(myFigure);
 
+  ///closeModalAndReset();
+  resetModalForm();
+  setupTrashIconListener(json);
+}
+//26--
 //previsualiser une nouvelle photo, cacher des elements et modifier le style du container
 //essaye d'obtenir l'element de previsualisation de l'image avec id=form-image-preview
 //si l'element n'existe pas, il est creé avec ses characteristiques: id, src, etc...
@@ -572,6 +559,7 @@ function updateImagePreview(imageSrc) {
   document.getElementById("modal-edit-new-photo").style.padding = "0";
 }
 
+//27--
 //select toutes les elements du formulair. Si changement => appel la fonction de validation
 function bindFormFieldsCheck() {
   let formFields = document.querySelectorAll(
@@ -582,6 +570,7 @@ function bindFormFieldsCheck() {
   });
 }
 
+//28--
 //Initialisation à true, d'une variable - allFieldsFilled
 //Verifier si la valeur de chaque element de la liste formFields est vide
 //(trim elimine les espaces du debout et de la fin)
@@ -604,24 +593,13 @@ function validateFormFields() {
   });
   document.getElementById("submit-new-work").style.backgroundColor =
     allFieldsFilled ? "#1D6154" : "#A7A7A7";
-
-  /*   document
-    .getElementById("submit-new-work")
-    .addEventListener("click", submitNewWork); */
-
-  /*   document
-    .getElementById("modal-edit-work-form")
-    .addEventListener("submit", function (event) {
-      //event.preventDefault(); // Prevenirea refresh-ului paginii
-      submitNewWork();
-    }); */
 }
-
+//29--
 function ListenSubmitModalEdit() {
   document
     .getElementById("modal-edit-work-form")
     .addEventListener("submit", function (event) {
-      event.preventDefault(); // Prevenirea refresh-ului paginii
+      event.preventDefault(); // prevention du rechargement de la page
       submitNewWork();
     });
 }

@@ -496,18 +496,22 @@ button:hover {
   border-radius: 10px;
   align-items: center;
   justify-content: center;
-  margin-top: -20px;
+  /* margin-top: -20px; */
   padding: 0px;
   display: none;
 }
 
 .modal-content .work-item .trash {
   margin-top: 5px;
-  background: #ffffff;
-  color: #000000;
-  border-radius: 2px;
+  margin-right: 5px;
+  color: #ffffff;
+  background: #000000;
+  border-radius: 3px;
   text-align: center;
   position: absolute;
+  margin-left: 60px;
+  padding: 4px;
+  font-size: 9px;
 }
 
 .work-item {
@@ -542,11 +546,14 @@ button:hover {
 }
 .modal-gallery {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
 }
 
 .modal-content {
+  background-color: green;
+  margin: auto;
   overflow: auto;
   width: 85%;
   height: 450px;
@@ -727,11 +734,12 @@ select {
   float: left;
 }
 
-.modal-content {
-  height: 400px;
-}
-
 #modal-works {
+  background-color: yellow;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
   height: 680px;
   overflow: hidden;
 }
