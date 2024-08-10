@@ -175,11 +175,12 @@ async function fetchWorksAndUpdateModal() {
   }
 }
 //4--
-//In modal- Construction et le retourn d'un element <figure>, qui va contenir toutes les infos sur le travaux
+//In modal- la construction et le retourn d'un element <figure>,
+//qui va contenir toutes les infos sur le travaux
 function createWorkFigureInModal(work) {
   let myFigure = document.createElement("figure");
   myFigure.className = `work-item category-id-0 category-id-${work.categoryId}`;
-  myFigure.id = `work-item-popup-${work.id}`;
+  myFigure.id = `work-item-popup-in-modal-${work.id}`;
   myFigure.appendChild(createImageElement(work));
   myFigure.appendChild(createTrashIcon(work));
   return myFigure;
@@ -191,7 +192,6 @@ function createWorkFigureInModal(work) {
 //Effacer le contenu de l'element modalContent
 //Appel la fontion createWorkFigure(work) qui returne un element HTML qui represente le travaux
 //Appeler la fonction setupTrashIconListener(), qui efface le travaux courrent
-//appeler la fonction openWorkModal() qui va faire visible le modal
 
 function updateWorksModal(works) {
   let modalContent = document.querySelector(
@@ -203,14 +203,14 @@ function updateWorksModal(works) {
     modalContent.appendChild(workFigure);
     setupTrashIconListener(work);
   });
-  openWorkModal();
 }
 //6--
-//In page - Construction et le retourn d'un element <figure>, qui va contenir toutes les infos sur le travaux
+//In page - la construction et le retourn d'un element <figure>,
+//qui va contenir toutes les infos sur le travaux
 function createWorkFigureInPage(work) {
   let myFigure = document.createElement("figure");
   myFigure.className = `work-item category-id-0 category-id-${work.categoryId}`;
-  myFigure.id = `work-item-popup-${work.id}`;
+  myFigure.id = `work-item-popup-in-page-${work.id}`;
   myFigure.appendChild(createImageElement(work));
 
   // Creation <figcaption>
@@ -234,12 +234,7 @@ function createImageElement(work) {
 //Creation et configuration de l'element <i> - corbeille
 function createTrashIcon() {
   let trashIcon = document.createElement("i");
-  trashIcon.classList.add(
-    "fa-solid",
-    "fa-trash-can",
-    "trash",
-    "nouvelle-corbeille"
-  );
+  trashIcon.classList.add("fa-solid", "fa-trash-can", "trash");
 
   return trashIcon;
 }
@@ -247,19 +242,22 @@ function createTrashIcon() {
 // Afficher une fênetre pour confirmer la supression. Si confirmé, alors supprime le traveaux
 function setupTrashIconListener(work) {
   let trashIcon = document
-    .getElementById(`work-item-popup-${work.id}`)
+    .getElementById(`work-item-popup-in-modal-${work.id}`)
     .querySelector(".trash");
+
   if (trashIcon) {
     trashIcon.addEventListener("click", async function (event) {
       event.preventDefault();
-      if (confirm("Voulez-vous supprimer cet élément ?")) {
+      event.stopPropagation();
+
+      if (confirm("Voulez-voussss supprimer cet élément ?")) {
         await deleteWork(work.id);
       }
     });
   }
 }
 //10--
-// Fontion pour supprimer
+// Fonction pour supprimer
 // Demande envoyé à l'API pour la supression
 // Le token est envoyé dans l'antete de l'autorisation
 async function deleteWork(workId) {
@@ -274,7 +272,8 @@ async function deleteWork(workId) {
 
     if (response.ok) {
       document.getElementById(`work-item-${workId}`)?.remove();
-      document.getElementById(`work-item-popup-${workId}`)?.remove();
+      document.getElementById(`work-item-popup-in-modal-${workId}`)?.remove();
+      document.getElementById(`work-item-popup-in-page-${workId}`)?.remove();
       await fetchWorksAndUpdateModal(); // Reîncarcă lucrările după ștergere
     } else {
       handleDeleteResponse(response, workId);
@@ -299,7 +298,9 @@ function handleDeleteResponse(response, workId) {
     case 200: // Item Deleted
     case 204: // No Content
       document.getElementById(`work-item-${workId}`).remove();
-      document.getElementById(`work-item-popup-${workId}`).remove();
+      document.getElementById(`work-item-popup-in-page-${workId}`).remove();
+      document.getElementById(`work-item-popup-in-modal-${workId}`).remove();
+
       break;
     default:
       alert("Erreur inconnue!");
@@ -312,7 +313,7 @@ function handleDeleteResponse(response, workId) {
 function openWorkModal() {
   document.getElementById("modal").style.display = "none";
   document.getElementById("modal-works").style.display = "none";
-  //document.getElementById("modal-works").style.cssText = ` display: none`;
+  document.getElementById("modal-works").style.cssText = ` display: none`;
 
   document.querySelector(".modal-content").style.cssText = `display: flex`;
 }
@@ -370,6 +371,7 @@ function resetModalForm() {
     "30px 0 19px 0";
   document.getElementById("submit-new-work").style.backgroundColor = "grey";
 }
+
 //17--
 // Naviguer entre les 2 sections de la modale + Reset le formulaire pour editer
 function setupModalEditListeners() {
@@ -515,8 +517,8 @@ function handleNewWorkResponse(response) {
 function addNewWorkToPage(json) {
   let myFigure = createWorkFigureInPage(json);
   document.querySelector("div.gallery").appendChild(myFigure);
-  // closeModalAndReset();
-  //resetModalForm();
+  //closeModalAndReset();
+  resetModalForm();
 }
 
 //25--
@@ -526,7 +528,6 @@ function addNewWorkToModale(json) {
   document
     .querySelector("#modal-works.modal-gallery .modal-content")
     .appendChild(myFigure);
-  // fetchWorksAndUpdateModal(myFigure);
 
   ///closeModalAndReset();
   resetModalForm();
@@ -581,7 +582,6 @@ function bindFormFieldsCheck() {
 //après apuyer sur le bouton valider, la modale ferme
 function validateFormFields() {
   let formFields = document.querySelectorAll(
-    //"#modal-edit-work-form button, #modal-edit-work-form select, #modal-edit-work-form input"
     "#modal-edit-work-form select, #modal-edit-work-form input"
   );
 

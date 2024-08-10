@@ -145,16 +145,26 @@ body.connected .only-guest {
 body.connected .only-admin {
   display: block;
 }
-/*** Top-bar ***/
-
+/*** Top-bar noir ***/
+/*position: relative pour body: etablier un contexte pour le positionement de ses elements enfants.
+position: absolute sur nav: nav est positioné relatif par raport à l'element parent 
+alors on peut utiliser la proprieté left pour pouvoir le positioner sur l'horizontale
+left: 50%: mets le coté gauche de l'element nav à 50% du largeur de son parent (body).
+transform: translateX(-50%): deplace l'element nav vers la gauche, avec 50% de sa largeur
+alors son centre va etre aligné avec le centre de son parent*/
 .top-bar-design {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 100%;
   height: 60px;
   background-color: #000000;
   display: none;
+  margin-top: -10px;
+  align-self: center;
+  position: absolute;
+  width: 180%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .top-bar-design li {
@@ -254,6 +264,7 @@ body {
   padding-left: 50px;
   padding-right: 50px;
   padding-bottom: 10px;
+  position: relative;
 }
 header {
   /*   display: flex; */
@@ -480,12 +491,6 @@ button:hover {
   text-decoration: underline;
 }
 
-#top-bar {
-  margin-top: -60px;
-  margin-left: -12%;
-  width: 120%;
-}
-
 .modal-gallery,
 .modal-edit-work {
   background-color: whitesmoke;
@@ -501,8 +506,20 @@ button:hover {
   display: none;
 }
 
+.modal-gallery {
+  /*  background-color: yellow; */
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  height: 680px;
+  overflow: auto;
+}
 .modal-content .work-item .trash {
-  margin-top: 5px;
+  margin-top: 10px;
+  margin-right: 10px;
+  /*margin-bottom: 115px;*/
   margin-right: 5px;
   color: #ffffff;
   background: #000000;
@@ -525,7 +542,10 @@ button:hover {
   margin-top: 20px;
 }
 #modal {
-  position: fixed;
+  position: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
   top: 0;
   left: 0px;
   width: 100%;
@@ -544,15 +564,9 @@ button:hover {
 #update-works {
   margin-top: -20px;
 }
-.modal-gallery {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-}
 
 .modal-content {
-  background-color: green;
+  /* background-color: green; */
   margin: auto;
   overflow: auto;
   width: 85%;
@@ -568,6 +582,8 @@ button:hover {
 }
 
 .modal-content figure {
+  background-color: blue;
+  position: relative;
   display: flex;
   flex-direction: column;
 }
@@ -732,14 +748,4 @@ select {
 /*align photo Sophie at left*/
 #portrait-sophie {
   float: left;
-}
-
-#modal-works {
-  background-color: yellow;
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: start;
-  height: 680px;
-  overflow: hidden;
 }
