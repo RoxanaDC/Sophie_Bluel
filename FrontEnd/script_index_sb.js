@@ -445,11 +445,19 @@ function setupFormHandlers() {
 // Si le fichier est lu avec succes, on appele cette fonction et on lui donne un evenement "e".
 function handleImagePreview() {
   let fileInput = document.getElementById("form-image"); //form-image est le boutton +Ajouter photo du deuxieme modale
-  const maxFileSize = 4 * 1024 * 1024; // 4 MB
+  let maxFileSize = 4 * 1024 * 1024; // 4 MB
   if (fileInput.files.length > 0) {
-    const file = fileInput.files[0];
-    if (file.size > maxFileSize) {
-      alert("La taille du fichier dépasse 4 MB.");
+    let file = fileInput.files[0];
+
+    if (
+      file.size > maxFileSize ||
+      (file.type !== "image/jpeg" &&
+        file.type !== "image/png" &&
+        file.type !== "image/jpg")
+    ) {
+      alert(
+        "La taille du fichier dépasse 4 MB ou n'a pas le format autorizé (.jpeg .jpg ou .png)"
+      );
       return;
     }
     let reader = new FileReader();
@@ -529,7 +537,7 @@ function addNewWorkToModale(json) {
     .querySelector("#modal-works.modal-gallery .modal-content")
     .appendChild(myFigure);
 
-  ///closeModalAndReset();
+  // closeModalAndReset();
   resetModalForm();
   setupTrashIconListener(json);
 }
