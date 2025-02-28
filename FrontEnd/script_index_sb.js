@@ -1,9 +1,11 @@
 // Ajout dynamique des travaux dans la galerie de portfolio de la page
 // Récupération des travaux existants depuis l'API
-document.addEventListener("DOMContentLoaded", async () => {
-  let gallery = document.querySelector(".gallery");
+document.addEventListener('DOMContentLoaded', async () => {
+  let gallery = document.querySelector('.gallery');
   try {
-    let response = await fetch("http://localhost:5678/api/works");
+    let response = await fetch(
+      'https://sophiebluel-production.up.railway.app/api/works'
+    );
     let dataWorks = await response.json();
     let works = dataWorks;
     console.log(works);
@@ -11,17 +13,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Boucle sur chaque travail
     works.forEach((work) => {
       // Creation <figure>
-      let figureSite = document.createElement("figure");
+      let figureSite = document.createElement('figure');
       figureSite.className = `work-item category-id-0 category-id-${work.categoryId}`;
       figureSite.id = `work-item-${work.id}`;
 
       // Creation <img>
-      let imageSite = document.createElement("img");
+      let imageSite = document.createElement('img');
       imageSite.src = work.imageUrl;
       imageSite.alt = work.title;
 
       // Creation <figcaption>
-      let figCaptionSite = document.createElement("figcaption");
+      let figCaptionSite = document.createElement('figcaption');
       figCaptionSite.textContent = work.title;
 
       //Append
@@ -32,15 +34,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log(work.title);
     });
   } catch (error) {
-    console.error("fetch error:", error);
+    console.error('fetch error:', error);
   }
 });
 
 // Ajout de filtres de catégories pour filtrer les travaux dans la galerie
 // Récupération des catégories existantes depuis l'API
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener('DOMContentLoaded', async () => {
   try {
-    let response = await fetch("http://localhost:5678/api/categories");
+    let response = await fetch(
+      'https://sophiebluel-production.up.railway.app/api/categories'
+    );
     /*   if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     } */
@@ -51,52 +55,52 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     /* Ajouter l'élément supplémentaire 'Tous', avec l'identifiant 0 
     au début du tableau catégories, obtenu depuis l'API.   */
-    categories.unshift({ id: 0, name: "Tous" });
+    categories.unshift({ id: 0, name: 'Tous' });
 
     // Boucle pour chaque catégorie
     categories.forEach((category) => {
       // Creation <button> pour filter
-      let bouttonFilter = document.createElement("button");
-      bouttonFilter.classList.add("work-filter");
-      bouttonFilter.classList.add("filters-design");
+      let bouttonFilter = document.createElement('button');
+      bouttonFilter.classList.add('work-filter');
+      bouttonFilter.classList.add('filters-design');
 
       if (category.id === 0)
-        bouttonFilter.classList.add("filter-active", "filter-all");
-      bouttonFilter.setAttribute("data-filter", category.id);
+        bouttonFilter.classList.add('filter-active', 'filter-all');
+      bouttonFilter.setAttribute('data-filter', category.id);
       bouttonFilter.textContent = category.name;
 
       //Ajout du nouveau <button> dans le div.filters existant
-      document.querySelector("div.filters").appendChild(bouttonFilter);
+      document.querySelector('div.filters').appendChild(bouttonFilter);
 
       // Click event <button> to filter
-      bouttonFilter.addEventListener("click", function (event) {
+      bouttonFilter.addEventListener('click', function (event) {
         event.preventDefault();
         // Gestion des filtres
-        document.querySelectorAll(".work-filter").forEach((workFilter) => {
-          workFilter.classList.remove("filter-active");
+        document.querySelectorAll('.work-filter').forEach((workFilter) => {
+          workFilter.classList.remove('filter-active');
         });
-        event.target.classList.add("filter-active");
+        event.target.classList.add('filter-active');
 
         //Gestion works
-        let categoryId = bouttonFilter.getAttribute("data-filter");
-        document.querySelectorAll(".work-item").forEach((workItem) => {
-          workItem.style.display = "none";
+        let categoryId = bouttonFilter.getAttribute('data-filter');
+        document.querySelectorAll('.work-item').forEach((workItem) => {
+          workItem.style.display = 'none';
         });
         document
           .querySelectorAll(`.work-item.category-id-${categoryId}`)
           .forEach((workItem) => {
-            workItem.style.display = "block";
+            workItem.style.display = 'block';
           });
       });
     });
   } catch (error) {
-    console.error("fetch error:", error);
+    console.error('fetch error:', error);
   }
 });
 
 /* --- Quand connectée avec ---
    --- user and password: --- */
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
   handleAdminMode(); //verifie s'il existe un token et un userId dans localStorage (utilisateur autentifié)
   clickOnLinkModifier(); // click sur le lien "modifier"
   setupModalCloseListeners(); //Gestioner les fermetures des modales
@@ -113,13 +117,13 @@ document.addEventListener("DOMContentLoaded", function () {
 //modifie l'interface, pour aficher les elements d'administration
 function handleAdminMode() {
   if (
-    localStorage.getItem("token") != null &&
-    localStorage.getItem("userId") != null
+    localStorage.getItem('token') != null &&
+    localStorage.getItem('userId') != null
   ) {
-    document.querySelector("body").classList.add("connected");
-    document.getElementById("top-bar").style.display = "flex";
-    document.getElementById("all-filters").style.display = "none";
-    document.getElementById("space-only-admin").style.paddingBottom = "25px";
+    document.querySelector('body').classList.add('connected');
+    document.getElementById('top-bar').style.display = 'flex';
+    document.getElementById('all-filters').style.display = 'none';
+    document.getElementById('space-only-admin').style.paddingBottom = '25px';
   }
 }
 
@@ -127,35 +131,35 @@ function handleAdminMode() {
 //Efacer les données du localStorage:
 //La modification visuelle de la page quand l'admin est connectée
 document
-  .getElementById("nav-logout")
-  .addEventListener("click", function (event) {
+  .getElementById('nav-logout')
+  .addEventListener('click', function (event) {
     event.preventDefault();
-    localStorage.removeItem("userId");
-    localStorage.removeItem("token");
+    localStorage.removeItem('userId');
+    localStorage.removeItem('token');
 
-    document.querySelector("body").classList.remove(`connected`);
-    let topBar = document.getElementById("top-bar");
-    topBar.style.display = "none";
-    let filters = document.getElementById("all-filters");
-    filters.style.display = "flex";
-    let space = document.getElementById("space-only-admin");
-    space.style.paddingBottom = "0";
+    document.querySelector('body').classList.remove(`connected`);
+    let topBar = document.getElementById('top-bar');
+    topBar.style.display = 'none';
+    let filters = document.getElementById('all-filters');
+    filters.style.display = 'flex';
+    let space = document.getElementById('space-only-admin');
+    space.style.paddingBottom = '0';
   });
 //2--
 // click sur le lien "modifier"
 function clickOnLinkModifier() {
-  let lienPourModifier = document.getElementById("update-works");
+  let lienPourModifier = document.getElementById('update-works');
   if (lienPourModifier) {
-    lienPourModifier.addEventListener("click", function (eveniment) {
+    lienPourModifier.addEventListener('click', function (eveniment) {
       eveniment.preventDefault();
       console.log(
-        "tu as appuyé sur le lien pour modifier et tu vois la modale"
+        'tu as appuyé sur le lien pour modifier et tu vois la modale'
       );
-      document.getElementById("modal").style.display = "flex";
-      document.getElementById("modal-works").style.display = "block";
+      document.getElementById('modal').style.display = 'flex';
+      document.getElementById('modal-works').style.display = 'block';
     });
   } else {
-    console.error("l`element update-works est introuvable");
+    console.error('l`element update-works est introuvable');
   }
   fetchWorksAndUpdateModal();
 }
@@ -164,7 +168,9 @@ function clickOnLinkModifier() {
 //Si la réponse est ok, appelle la fonction updateWorksModal avec les données reçues.
 async function fetchWorksAndUpdateModal() {
   try {
-    const response = await fetch("http://localhost:5678/api/works");
+    const response = await fetch(
+      'https://sophiebluel-production.up.railway.app/api/works'
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -178,7 +184,7 @@ async function fetchWorksAndUpdateModal() {
 //In modal- la construction et le retourn d'un element <figure>,
 //qui va contenir toutes les infos sur le travaux
 function createWorkFigureInModal(work) {
-  let myFigure = document.createElement("figure");
+  let myFigure = document.createElement('figure');
   myFigure.className = `work-item category-id-0 category-id-${work.categoryId}`;
   myFigure.id = `work-item-popup-in-modal-${work.id}`;
   myFigure.appendChild(createImageElement(work));
@@ -195,9 +201,9 @@ function createWorkFigureInModal(work) {
 
 function updateWorksModal(works) {
   let modalContent = document.querySelector(
-    "#modal-works.modal-gallery .modal-content"
+    '#modal-works.modal-gallery .modal-content'
   );
-  modalContent.innerText = "";
+  modalContent.innerText = '';
   works.forEach((work) => {
     let workFigure = createWorkFigureInModal(work);
     modalContent.appendChild(workFigure);
@@ -208,13 +214,13 @@ function updateWorksModal(works) {
 //In page - la construction et le retourn d'un element <figure>,
 //qui va contenir toutes les infos sur le travaux
 function createWorkFigureInPage(work) {
-  let myFigure = document.createElement("figure");
+  let myFigure = document.createElement('figure');
   myFigure.className = `work-item category-id-0 category-id-${work.categoryId}`;
   myFigure.id = `work-item-popup-in-page-${work.id}`;
   myFigure.appendChild(createImageElement(work));
 
   // Creation <figcaption>
-  let figCaptionSite = document.createElement("figcaption");
+  let figCaptionSite = document.createElement('figcaption');
   figCaptionSite.textContent = work.title;
 
   //Append
@@ -225,7 +231,7 @@ function createWorkFigureInPage(work) {
 //7--
 // Creation de l'image
 function createImageElement(work) {
-  let myImg = document.createElement("img");
+  let myImg = document.createElement('img');
   myImg.src = work.imageUrl;
   myImg.alt = work.title;
   return myImg;
@@ -233,8 +239,8 @@ function createImageElement(work) {
 //8--
 //Creation et configuration de l'element <i> - corbeille
 function createTrashIcon() {
-  let trashIcon = document.createElement("i");
-  trashIcon.classList.add("fa-solid", "fa-trash-can", "trash");
+  let trashIcon = document.createElement('i');
+  trashIcon.classList.add('fa-solid', 'fa-trash-can', 'trash');
 
   return trashIcon;
 }
@@ -243,14 +249,14 @@ function createTrashIcon() {
 function setupTrashIconListener(work) {
   let trashIcon = document
     .getElementById(`work-item-popup-in-modal-${work.id}`)
-    .querySelector(".trash");
+    .querySelector('.trash');
 
   if (trashIcon) {
-    trashIcon.addEventListener("click", async function (event) {
+    trashIcon.addEventListener('click', async function (event) {
       event.preventDefault();
       event.stopPropagation();
 
-      if (confirm("Voulez-voussss supprimer cet élément ?")) {
+      if (confirm('Voulez-voussss supprimer cet élément ?')) {
         await deleteWork(work.id);
       }
     });
@@ -262,13 +268,16 @@ function setupTrashIconListener(work) {
 // Le token est envoyé dans l'antete de l'autorisation
 async function deleteWork(workId) {
   try {
-    const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    });
+    const response = await fetch(
+      `https://sophiebluel-production.up.railway.app/api/works/${workId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+      }
+    );
 
     if (response.ok) {
       document.getElementById(`work-item-${workId}`)?.remove();
@@ -290,10 +299,10 @@ function handleDeleteResponse(response, workId) {
   switch (response.status) {
     case 500: //  Unexpected Behaviour
     case 503: // Service Unavailable
-      alert("Comportement inattendu!");
+      alert('Comportement inattendu!');
       break;
     case 401: //Unauthorized
-      alert("Suppresion impossible!");
+      alert('Suppresion impossible!');
       break;
     case 200: // Item Deleted
     case 204: // No Content
@@ -303,7 +312,7 @@ function handleDeleteResponse(response, workId) {
 
       break;
     default:
-      alert("Erreur inconnue!");
+      alert('Erreur inconnue!');
       break;
   }
 }
@@ -311,39 +320,39 @@ function handleDeleteResponse(response, workId) {
 //12--
 // Visibilité du modal
 function openWorkModal() {
-  document.getElementById("modal").style.display = "none";
-  document.getElementById("modal-works").style.display = "none";
-  document.getElementById("modal-works").style.cssText = ` display: none`;
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal-works').style.display = 'none';
+  document.getElementById('modal-works').style.cssText = ` display: none`;
 
-  document.querySelector(".modal-content").style.cssText = `display: flex`;
+  document.querySelector('.modal-content').style.cssText = `display: flex`;
 }
 //13--
 //Gestioner les fermetures des modales
 function setupModalCloseListeners() {
-  document.querySelectorAll("#modal-works").forEach((modalWorks) => {
-    modalWorks.addEventListener("click", (event) => event.stopPropagation()); //pour eviter que la modale ferme quand on clik sur elle
+  document.querySelectorAll('#modal-works').forEach((modalWorks) => {
+    modalWorks.addEventListener('click', (event) => event.stopPropagation()); //pour eviter que la modale ferme quand on clik sur elle
 
-    document.querySelectorAll("#modal-edit").forEach((modalEdit) => {
-      modalEdit.addEventListener("click", (event) => event.stopPropagation());
+    document.querySelectorAll('#modal-edit').forEach((modalEdit) => {
+      modalEdit.addEventListener('click', (event) => event.stopPropagation());
 
-      document.getElementById("modal").addEventListener("click", closeModal);
+      document.getElementById('modal').addEventListener('click', closeModal);
     });
   });
 
   document
-    .getElementById("button-to-close-first-window")
-    .addEventListener("click", closeModal);
+    .getElementById('button-to-close-first-window')
+    .addEventListener('click', closeModal);
 
   document
-    .getElementById("button-to-close-second-window")
-    .addEventListener("click", closeModalAndReset);
+    .getElementById('button-to-close-second-window')
+    .addEventListener('click', closeModalAndReset);
 }
 //14--
 //Cacher la modale principale et les 2 sections: modal-works et modal-edit
 function closeModal(event) {
-  document.getElementById("modal").style.display = "none";
-  document.getElementById("modal-works").style.display = "none";
-  document.getElementById("modal-edit").style.display = "none";
+  document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal-works').style.display = 'none';
+  document.getElementById('modal-edit').style.display = 'none';
 }
 //15--
 // Fermer modal et reset
@@ -360,16 +369,16 @@ function closeModalAndReset(event) {
 // Paddind pour la div qui contienne les 3 elements precedentes
 // Changer la couleur du boutton valider pour indiquer qu'il n'est pas active
 function resetModalForm() {
-  if (document.getElementById("form-image-preview")) {
-    document.getElementById("form-image-preview").remove();
+  if (document.getElementById('form-image-preview')) {
+    document.getElementById('form-image-preview').remove();
   }
-  document.getElementById("modal-edit-work-form").reset();
-  document.getElementById("photo-add-icon").style.display = "block";
-  document.getElementById("new-image").style.display = "block";
-  document.getElementById("photo-size").style.display = "block";
-  document.getElementById("modal-edit-new-photo").style.padding =
-    "30px 0 19px 0";
-  document.getElementById("submit-new-work").style.backgroundColor = "grey";
+  document.getElementById('modal-edit-work-form').reset();
+  document.getElementById('photo-add-icon').style.display = 'block';
+  document.getElementById('new-image').style.display = 'block';
+  document.getElementById('photo-size').style.display = 'block';
+  document.getElementById('modal-edit-new-photo').style.padding =
+    '30px 0 19px 0';
+  document.getElementById('submit-new-work').style.backgroundColor = 'grey';
 }
 
 //17--
@@ -377,19 +386,19 @@ function resetModalForm() {
 function setupModalEditListeners() {
   // Configurer le bouton "modal-edit-add" de la liste des travaux
   document
-    .getElementById("modal-edit-add")
-    .addEventListener("click", function (event) {
+    .getElementById('modal-edit-add')
+    .addEventListener('click', function (event) {
       event.preventDefault();
-      document.getElementById("modal-works").style.display = "none";
-      document.getElementById("modal-edit").style.display = "block";
+      document.getElementById('modal-works').style.display = 'none';
+      document.getElementById('modal-edit').style.display = 'block';
     });
   // Configurer le bouton "arrow-return"
   document
-    .getElementById("arrow-return")
-    .addEventListener("click", function (event) {
+    .getElementById('arrow-return')
+    .addEventListener('click', function (event) {
       event.preventDefault();
-      document.getElementById("modal-works").style.display = "block";
-      document.getElementById("modal-edit").style.display = "none";
+      document.getElementById('modal-works').style.display = 'block';
+      document.getElementById('modal-edit').style.display = 'none';
       resetModalForm();
     });
 }
@@ -397,7 +406,9 @@ function setupModalEditListeners() {
 // Demande à L'API les categories et les passer à la fonction populateCategories pour remplir la liste
 async function fetchCategories() {
   try {
-    const response = await fetch("http://localhost:5678/api/categories");
+    const response = await fetch(
+      'https://sophiebluel-production.up.railway.app/api/categories'
+    );
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
@@ -411,11 +422,11 @@ async function fetchCategories() {
 // Creation d'une liste d'options dropdown avec les categories obtenues precedement
 function populateCategories(categories) {
   categories.forEach((category) => {
-    let myOption = document.createElement("option");
+    let myOption = document.createElement('option');
     myOption.value = category.id;
     myOption.textContent = category.name;
     //Ajouter les options obtenues, dans l'element <select> qui a la classe = "choice-category"
-    document.querySelector("select.choice-category").appendChild(myOption);
+    document.querySelector('select.choice-category').appendChild(myOption);
   });
 }
 
@@ -429,8 +440,8 @@ function populateCategories(categories) {
 //20--
 function setupFormHandlers() {
   document
-    .getElementById("form-image")
-    .addEventListener("change", function (event) {
+    .getElementById('form-image')
+    .addEventListener('change', function (event) {
       event.preventDefault(); // Prevenirea refresh-ului paginii
       handleImagePreview();
     });
@@ -444,16 +455,16 @@ function setupFormHandlers() {
 // Fonction anonyme pour l'evenement onload du FileReader.
 // Si le fichier est lu avec succes, on appele cette fonction et on lui donne un evenement "e".
 function handleImagePreview() {
-  let fileInput = document.getElementById("form-image"); //form-image est le boutton +Ajouter photo du deuxieme modale
+  let fileInput = document.getElementById('form-image'); //form-image est le boutton +Ajouter photo du deuxieme modale
   let maxFileSize = 4 * 1024 * 1024; // 4 MB
   if (fileInput.files.length > 0) {
     let file = fileInput.files[0];
 
     if (
       file.size > maxFileSize ||
-      (file.type !== "image/jpeg" &&
-        file.type !== "image/png" &&
-        file.type !== "image/jpg")
+      (file.type !== 'image/jpeg' &&
+        file.type !== 'image/png' &&
+        file.type !== 'image/jpg')
     ) {
       alert(
         "La taille du fichier dépasse 4 MB ou n'a pas le format autorizé (.jpeg .jpg ou .png)"
@@ -472,18 +483,21 @@ function handleImagePreview() {
 async function submitNewWork() {
   // Creer un nouveau objet formData, pour collecter les données du formulaire
   let formData = new FormData();
-  formData.append("title", document.getElementById("form-title").value);
-  formData.append("category", document.getElementById("form-category").value);
-  formData.append("image", document.getElementById("form-image").files[0]);
+  formData.append('title', document.getElementById('form-title').value);
+  formData.append('category', document.getElementById('form-category').value);
+  formData.append('image', document.getElementById('form-image').files[0]);
 
   try {
-    let response = await fetch("http://localhost:5678/api/works", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-      body: formData,
-    });
+    let response = await fetch(
+      'https://sophiebluel-production.up.railway.app/api/works',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token'),
+        },
+        body: formData,
+      }
+    );
 
     await handleNewWorkResponse(response); // Gestioner la reponse de la demande
 
@@ -503,10 +517,10 @@ async function submitNewWork() {
 function handleNewWorkResponse(response) {
   switch (response.status) {
     case 500: //Unexpected Error
-      alert("Erreur inattendue!");
+      alert('Erreur inattendue!');
       break;
     case 401: //Unauthorized
-      alert("Pas authorisé!");
+      alert('Pas authorisé!');
       break;
     case 400: //Bad Request
       alert("Impossible d'ajouter le projet!");
@@ -515,7 +529,7 @@ function handleNewWorkResponse(response) {
       // return response.json();
       return response;
     default:
-      alert("Erreur inconnue!");
+      alert('Erreur inconnue!');
       break;
   }
 }
@@ -524,7 +538,7 @@ function handleNewWorkResponse(response) {
 //Fermer et reset la modale d'ajoute
 function addNewWorkToPage(json) {
   let myFigure = createWorkFigureInPage(json);
-  document.querySelector("div.gallery").appendChild(myFigure);
+  document.querySelector('div.gallery').appendChild(myFigure);
   //closeModalAndReset();
   resetModalForm();
 }
@@ -534,7 +548,7 @@ function addNewWorkToPage(json) {
 function addNewWorkToModale(json) {
   let myFigure = createWorkFigureInModal(json);
   document
-    .querySelector("#modal-works.modal-gallery .modal-content")
+    .querySelector('#modal-works.modal-gallery .modal-content')
     .appendChild(myFigure);
 
   // closeModalAndReset();
@@ -549,33 +563,33 @@ function addNewWorkToModale(json) {
 //avec id = modal-edit-new-photo (celui avec l'icon soleil+montagne + bouton "+Ajouter photo" + dimension image)
 function updateImagePreview(imageSrc) {
   let imgPreview =
-    document.getElementById("form-image-preview") ||
-    document.createElement("img");
-  imgPreview.id = "form-image-preview";
+    document.getElementById('form-image-preview') ||
+    document.createElement('img');
+  imgPreview.id = 'form-image-preview';
   imgPreview.src = imageSrc;
-  imgPreview.alt = "Prévisualisation de la nouvelle photo";
-  imgPreview.style.width = "129px";
-  imgPreview.style.height = "168px";
-  imgPreview.style.objectFit = "cover";
-  if (!document.getElementById("form-image-preview")) {
-    let formDiv = document.getElementById("modal-edit-new-photo");
+  imgPreview.alt = 'Prévisualisation de la nouvelle photo';
+  imgPreview.style.width = '129px';
+  imgPreview.style.height = '168px';
+  imgPreview.style.objectFit = 'cover';
+  if (!document.getElementById('form-image-preview')) {
+    let formDiv = document.getElementById('modal-edit-new-photo');
     formDiv.prepend(imgPreview);
   }
-  document.getElementById("photo-add-icon").style.display = "none";
-  document.getElementById("new-image").style.display = "none";
-  document.getElementById("photo-size").style.display = "none";
+  document.getElementById('photo-add-icon').style.display = 'none';
+  document.getElementById('new-image').style.display = 'none';
+  document.getElementById('photo-size').style.display = 'none';
 
-  document.getElementById("modal-edit-new-photo").style.padding = "0";
+  document.getElementById('modal-edit-new-photo').style.padding = '0';
 }
 
 //27--
 //select toutes les elements du formulair. Si changement => appel la fonction de validation
 function bindFormFieldsCheck() {
   let formFields = document.querySelectorAll(
-    "#modal-edit-work-form input, #modal-edit-work-form select"
+    '#modal-edit-work-form input, #modal-edit-work-form select'
   );
   formFields.forEach((field) => {
-    field.addEventListener("input", validateFormFields);
+    field.addEventListener('input', validateFormFields);
   });
 }
 
@@ -590,7 +604,7 @@ function bindFormFieldsCheck() {
 //après apuyer sur le bouton valider, la modale ferme
 function validateFormFields() {
   let formFields = document.querySelectorAll(
-    "#modal-edit-work-form select, #modal-edit-work-form input"
+    '#modal-edit-work-form select, #modal-edit-work-form input'
   );
 
   let allFieldsFilled = true;
@@ -599,14 +613,14 @@ function validateFormFields() {
       allFieldsFilled = false;
     }
   });
-  document.getElementById("submit-new-work").style.backgroundColor =
-    allFieldsFilled ? "#1D6154" : "#A7A7A7";
+  document.getElementById('submit-new-work').style.backgroundColor =
+    allFieldsFilled ? '#1D6154' : '#A7A7A7';
 }
 //29--
 function ListenSubmitModalEdit() {
   document
-    .getElementById("modal-edit-work-form")
-    .addEventListener("submit", function (event) {
+    .getElementById('modal-edit-work-form')
+    .addEventListener('submit', function (event) {
       event.preventDefault(); // prevention du rechargement de la page
       submitNewWork();
     });
